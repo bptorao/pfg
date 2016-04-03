@@ -19,7 +19,7 @@ public class PreProceso {
 		MnistFetcher mf = new MnistFetcher();
 		try{
 			fileDir = mf.downloadAndUntar();
-			log.debug("Descargada coleccion en: "+fileDir.getAbsolutePath());
+			log.debug("Descargada colección en: "+fileDir.getAbsolutePath());
 			MnistManager m = new MnistManager(fileDir.getAbsolutePath()+"/images-idx1-ubyte", fileDir.getAbsolutePath()+"/labels-idx1-ubyte");
 			for(int i=1;i<=numImages;i++){
 				m.setCurrent(i); //index of the image that we are interested in 
@@ -28,7 +28,7 @@ public class PreProceso {
 				MnistManager.writeImageToPpm(image, fileDir.getAbsolutePath()+"/Num_"+String.format("%05d",i)+"_label"+m.readLabel()+".ppm");
 			}
 			log.debug("Procesadas "+numImages+" imágenes");
-			log.debug("Descargada coleccion en: "+fileDir.getAbsolutePath());
+			log.debug("Descargada colección en: "+fileDir.getAbsolutePath());
 		}catch(Exception e){
 			log.error("Error en PreProceso "+e.getMessage());
 			e.printStackTrace();
