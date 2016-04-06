@@ -28,13 +28,14 @@ private static final String LOCAL_DIR_NAME = "MNIST";
 
  
  
-public File downloadAndUntar() throws IOException { 
+public File downloadAndUntar(String filesDir) throws IOException { 
  if(fileDir != null) { 
   return fileDir; 
  } 
  // mac gives unique tmp each run and we want to store this persist 
  // this data across restarts 
- File tmpDir = new File(System.getProperty("user.home")); 
+ //File tmpDir = new File(System.getProperty("user.home")); 
+ File tmpDir = new File(filesDir); 
 
  File baseDir = new File(tmpDir, LOCAL_DIR_NAME); 
  if(!(baseDir.isDirectory() || baseDir.mkdir())) { 

@@ -15,12 +15,14 @@ public class PreProceso {
 	private static int numImages = 10;
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		//cargando propiedades:
+		Configuracion config = new Configuracion();
+		
 		MnistFetcher mf = new MnistFetcher();
 		try{
-			fileDir = mf.downloadAndUntar();
+			fileDir = mf.downloadAndUntar(config.value("directorio.mnist"));
 			log.debug("Descargada colección en: "+fileDir.getAbsolutePath());
-			MnistManager m = new MnistManager(fileDir.getAbsolutePath()+"/images-idx1-ubyte", fileDir.getAbsolutePath()+"/labels-idx1-ubyte");
+			MnistManager m = new MnistManager(fileDir.getAbsolutePath()+"/"+config.value("mnist.images"), fileDir.getAbsolutePath()+"/"+config.value("mnist.label"));
 			for(int i=1;i<=numImages;i++){
 				m.setCurrent(i); //index of the image that we are interested in 
 				int[][] image = m.readImage(); 
