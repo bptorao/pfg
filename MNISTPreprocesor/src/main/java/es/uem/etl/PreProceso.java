@@ -15,21 +15,27 @@ public class PreProceso {
 	private static int numImages = 0;
 	
 	public static void main(String[] args) {
-		//cargando propiedades:
-		Configuracion config = new Configuracion();
 		MnistFetcher mf = new MnistFetcher();
 		
 		try{
 			//leemos el numero de imagenes a leer
-			numImages = (new Integer(config.value("obtenerN.images"))).intValue();
+			numImages = (new Integer(Configuracion.value("obtenerN.images"))).intValue();
 			log.debug("Preparando para procesar: "+numImages+" images");
 			//obtenemos la coleccion
-			fileDir = mf.downloadAndUntar(config.value("directorio.mnist"));
-			log.debug("Descargada colección en: "+fileDir.getAbsolutePath());
-			MnistManager m = new MnistManager(fileDir.getAbsolutePath()+"/"+config.value("mnist.images"), fileDir.getAbsolutePath()+"/"+config.value("mnist.label"));
+			if(Configuracion.value("descarga.mnist").equalsIgnoreCase("true")){
+				fileDir = mf.downloadAndUntar(Configuracion.value("directorio.mnist"));
+				log.debug("Descargada colección en: "+fileDir.getAbsolutePath());	
+			}else{
+				fileDir = new File(Configuracion.value("directorio.mnist")+"/MNIST");
+				log.debug("Colección previamente descargada en: "+fileDir.getAbsolutePath()+"/MNIST");
+			}
+			MnistManager m = new MnistManager(fileDir.getAbsolutePath()+"/"+Configuracion.value("mnist.images"), fileDir.getAbsolutePath()+"/"+Configuracion.value("mnist.label"));
 			
 			//leemos configuracion y generamos los ficheros
-			switch(configuracion(config)){
+			switch(configuracionSalida()){
+			case 0:
+				//configuracion no reconocida
+				log.debug("Configuración no reconocida");
 			case 1:
 				// crea imagenes PPM
 				log.debug("Generando imágenes PPM");
@@ -44,10 +50,9 @@ public class PreProceso {
 			case 2:
 				// crea ficheros con las imágenes
 				log.debug("Generando vectores: ficheros images y labels ");
-				
-			default:
-				//configuracion no reconocida
-				log.debug("Configuración no reconocida");
+				m.writeImageToVector(numImages, fileDir.getAbsolutePath()+"/Vector_");
+				log.debug("Procesados dos ficheros Vector_mnist.images y Vector_mnist.labels con "+numImages+" procesadas");
+				log.debug("Descargada colección en: "+fileDir.getAbsolutePath());
 			}
 			
 		}catch(Exception e){
@@ -57,11 +62,11 @@ public class PreProceso {
 		
 	}
 
-	private static int configuracion(Configuracion config){
+	private static int configuracionSalida(){
 		int configValue = 0;
 		String writeImage;
 		
-		writeImage = config.value("writeImage.to");
+		writeImage = Configuracion.value("writeImage.to");
 		if(writeImage.equalsIgnoreCase("ppm")){
 			configValue = 1;
 		}

@@ -7,8 +7,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+
 
 
 
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  */
 public class Configuracion {
-	private static Logger log = LoggerFactory.getLogger(PreProceso.class); 
+	private static Logger log = Logger.getLogger(Configuracion.class); 
     private static Properties propiedades = null;
     private static final String CONFIGURATION_FILE = "es/uem/config/configuracion.properties";
 

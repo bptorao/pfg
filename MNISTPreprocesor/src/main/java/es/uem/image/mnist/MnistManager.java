@@ -3,7 +3,11 @@ package es.uem.image.mnist;
 
 import java.io.BufferedWriter; 
 import java.io.FileWriter; 
-import java.io.IOException; 
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+
+import es.uem.etl.PreProceso; 
  
  
 /**
@@ -27,6 +31,7 @@ import java.io.IOException;
 public class MnistManager { 
     private MnistImageFile images; 
     private MnistLabelFile labels; 
+	private static Logger log = Logger.getLogger(MnistManager.class);
 
     /**
      * Writes the given image in the given file using the PPM data format. 
@@ -35,24 +40,44 @@ public class MnistManager {
      * @param ppmFileName 
      * @throws java.io.IOException 
      */ 
-    public static void writeImageToVector(int[][] image, String ppmFileName) throws IOException { 
-        BufferedWriter ppmOut = null; 
+    public void writeImageToVector(int numImages, String ppmFileName) throws IOException { 
+        BufferedWriter ppmOutImages = null;
+        BufferedWriter ppmOutLabels = null;
+        String fileImages = ppmFileName+"mnist.images";
+        String fileLabels = ppmFileName+"mnist.labels";
+        int[][] image;
+        int label;
+        int rows;
+        int cols;
+        
         try { 
-            ppmOut = new BufferedWriter(new FileWriter(ppmFileName)); 
- 
-            int rows = image.length; 
-            int cols = image[0].length; 
-            //ppmOut.write("P3\n"); 
-            //ppmOut.write("" + rows + " " + cols + " 255\n"); 
-            for (int i = 0; i < rows; i++) { 
-                StringBuffer s = new StringBuffer(); 
-                for (int j = 0; j < cols; j++) { 
-                    s.append(image[i][j] + " " + image[i][j] + " " + image[i][j] + "  "); 
-                } 
-                ppmOut.write(s.toString()); 
-            } 
+            ppmOutImages = new BufferedWriter(new FileWriter(fileImages));
+            ppmOutLabels = new BufferedWriter(new FileWriter(fileLabels));
+        	log.debug("Numero de images a procesar: "+numImages);
+        	for(int index=1;index<=numImages;index++){
+				setCurrent(index); //index of the image that we are interested in 
+				image = readImage(); 
+				label = readLabel();
+				
+	            rows = image.length; 
+	            cols = image[0].length; 
+	            //ppmOut.write("P3\n"); 
+	            //ppmOut.write("" + rows + " " + cols + " 255\n"); 
+	            for (int i = 0; i < rows; i++) { 
+	                StringBuffer s = new StringBuffer(); 
+	                for (int j = 0; j < cols; j++) { 
+	                    s.append(image[i][j] + " " + image[i][j] + " " + image[i][j] + "  "); 
+	                } 
+	                
+	                ppmOutImages.write(s.toString());
+	                
+	            }
+	            ppmOutImages.write("\n");
+	            ppmOutLabels.write(new Integer(label).toString()+"\n");
+        	}
         } finally { 
-            ppmOut.close(); 
+            ppmOutImages.close();
+            ppmOutLabels.close();
         } 
  
     } 
