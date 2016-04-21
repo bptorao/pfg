@@ -1,0 +1,7 @@
+2016-04-10 21:50:46 DEBUG Configuracion:56 - Config:Cargando propiedades del fichero:C:\ETL_Mnist\es\uem\config\configuracion.properties
+2016-04-10 21:50:46 DEBUG PreProceso:25 - Preparando para procesar: 10 images
+2016-04-10 21:50:46 DEBUG PreProceso:32 - Colección previamente descargada en: C:\uem\PFG\trabajo\MNIST/MNIST
+2016-04-10 21:50:46 DEBUG PreProceso:54 - Generando vectores: ficheros images y labels 
+2016-04-10 21:50:46 DEBUG MnistManager:56 - Numero de images a procesar: 10
+2016-04-10 21:50:47 DEBUG PreProceso:56 - Procesados dos ficheros Vector_mnist.images y Vector_mnist.labels con 10 procesadas
+2016-04-10 21:50:47 DEBUG PreProceso:57 - Descargada colección en: C:\uem\PFG\trabajo\MNIST
