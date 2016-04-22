@@ -31,7 +31,9 @@ public class NNClassificationMNIST {
         int headerRows = 1;
         char separator = ',';
         Matrix data = MatrixUtils.readCSV("c:/uem/PFG/trabajo/Convolutional_Training_Digits_1000.csv", separator, headerRows);
-
+        
+        //Integrar con Hadoop aquí para obtener la matriz
+        
         // Split data into training set and crossvalidation set.
         float crossValidationPercent = 33;
         Matrix[] split = MatrixUtils.split(data, crossValidationPercent, 0);
