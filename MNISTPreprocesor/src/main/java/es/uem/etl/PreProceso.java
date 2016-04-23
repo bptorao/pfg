@@ -15,7 +15,8 @@ public class PreProceso {
 	private static File fileDirDownload;
 	private static int numImages = 0;
 	
-	public static void main(String[] args) {
+	
+	public static void ejecuta() {
 		MnistFetcher mf = new MnistFetcher();
 		
 		try{
@@ -95,6 +96,9 @@ public class PreProceso {
 		}
 		return configValue;
 	}
-
+	
+	public static void main(String[] args) {
+		ejecuta();
+	}
 	
 }
