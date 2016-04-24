@@ -1,6 +1,8 @@
 package es.uem.etl;
 
 import java.io.File;
+import java.util.HashMap;
+
 import org.apache.log4j.Logger;
 
 import es.uem.image.mnist.MnistFetcher;
@@ -10,30 +12,35 @@ public class PreProceso {
 	
 	//private static Logger log = LoggerFactory.getLogger(PreProceso.class); 
 	private static Logger log = Logger.getLogger(PreProceso.class);
+	private  Configuracion configuracion = null;
+	private  File fileDirWork;
+	private  File fileDirDownload;
+	private  int numImages = 0;
 	
-	private static File fileDirWork;
-	private static File fileDirDownload;
-	private static int numImages = 0;
+	public void ejecuta(){
+		HashMap paramsMap = null;
+		ejecuta(paramsMap);
+	}
 	
-	
-	public static void ejecuta() {
+	public void ejecuta(HashMap paramsMap) {
 		MnistFetcher mf = new MnistFetcher();
+		configuracion = new Configuracion(paramsMap);
 		
 		try{
 			//leemos el numero de imagenes a leer
-			numImages = (new Integer(Configuracion.value("obtenerN.images"))).intValue();
+			numImages = (new Integer(configuracion.value("obtenerN.images"))).intValue();
 			log.debug("Preparando para procesar: "+numImages+" images");
 			//obtenemos la coleccion
-			if(Configuracion.value("descarga.mnist").equalsIgnoreCase("true")){
-				fileDirDownload = mf.downloadAndUntar(Configuracion.value("directorio.mnist"));
-				fileDirWork = new File(Configuracion.value("directorio.mnist"));
+			if(configuracion.value("descarga.mnist").equalsIgnoreCase("true")){
+				fileDirDownload = mf.downloadAndUntar(configuracion.value("directorio.mnist"));
+				fileDirWork = new File(configuracion.value("directorio.mnist"));
 				log.debug("Descargada colección en: "+fileDirDownload.getAbsolutePath());	
 			}else{
-				fileDirDownload = new File(Configuracion.value("directorio.mnist")+"/MNIST");
-				fileDirWork = new File(Configuracion.value("directorio.mnist"));
+				fileDirDownload = new File(configuracion.value("directorio.mnist")+"/MNIST");
+				fileDirWork = new File(configuracion.value("directorio.mnist"));
 				log.debug("Colección previamente descargada en: "+fileDirDownload.getAbsolutePath()+"/MNIST");
 			}
-			MnistManager m = new MnistManager(fileDirDownload.getAbsolutePath()+"/"+Configuracion.value("mnist.images"), fileDirDownload.getAbsolutePath()+"/"+Configuracion.value("mnist.label"));
+			MnistManager m = new MnistManager(fileDirDownload.getAbsolutePath()+"/"+configuracion.value("mnist.images"), fileDirDownload.getAbsolutePath()+"/"+configuracion.value("mnist.label"));
 			
 			//leemos configuracion y generamos los ficheros
 			switch(configuracionSalida()){
@@ -80,11 +87,11 @@ public class PreProceso {
 		
 	}
 
-	private static int configuracionSalida(){
+	private int configuracionSalida(){
 		int configValue = 0;
 		String writeImage;
 		
-		writeImage = Configuracion.value("writeImage.to");
+		writeImage = configuracion.value("writeImage.to");
 		if(writeImage.equalsIgnoreCase("ppm")){
 			configValue = 1;
 		}
@@ -98,7 +105,8 @@ public class PreProceso {
 	}
 	
 	public static void main(String[] args) {
-		ejecuta();
+		PreProceso preproceso = new PreProceso();
+		preproceso.ejecuta();
 	}
 	
 }

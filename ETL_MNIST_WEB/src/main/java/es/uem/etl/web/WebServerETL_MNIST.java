@@ -28,20 +28,13 @@ public class WebServerETL_MNIST extends HttpServlet
 	private static final long serialVersionUID = 1L;
 	
 	private static Logger logger = Logger.getLogger(WebServerETL_MNIST.class);
-	private String tarea="ETL Preprocesado colección MNIST (http://yann.lecun.com/exdb/mnist/)";
-	private String mensaje="Tarea Ejecución ETL";
 	//private String enlace= "<p><a href=\"/scaf\">Acceda al contexto de la tarea a ejecutar</a><p>";
  
 	public WebServerETL_MNIST(){}
-    public WebServerETL_MNIST(String tarea, String mensaje)
-    {
-        this.tarea=tarea;
-        this.mensaje=mensaje;
- 
-    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        response.setContentType("text/html");
+        /*response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().println("<h1>"+tarea+"</h1>");
         response.getWriter().println("<H2>"+mensaje+"</H2>");
@@ -49,6 +42,8 @@ public class WebServerETL_MNIST extends HttpServlet
         //ENLACES TAREAS VODAFONE
         response.getWriter().println("<p><a href=\"/scaf/borradoSoportes?ejecuta=borradosoportes\">Enlace ejecución tarea Borrado Soportes</a><p>");
         response.getWriter().println("session=" + request.getSession(true).getId());
+        */
+        System.out.println("   doGet called with URI: " + request.getRequestURI());
     }
 
 /*    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
