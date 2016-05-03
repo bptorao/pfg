@@ -19,7 +19,16 @@
 	   <artifactId>NeutralNetwork</artifactId>
 	   <version>0.0.1-SNAPSHOT</version>
 	</dependency>
-
+        <dependency>
+        	<groupId>es.uem.etl.config</groupId>
+		    <artifactId>Configuracion</artifactId>
+		    <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+         <dependency>
+		    <groupId>log4j</groupId>
+		    <artifactId>log4j</artifactId>
+		    <version>1.2.17</version>
+		</dependency> 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

@@ -1,10 +1,12 @@
 package es.uem.etl;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
+import es.uem.etl.config.Configuracion;
 import es.uem.image.mnist.MnistFetcher;
 import es.uem.image.mnist.MnistManager;
 
@@ -16,6 +18,8 @@ public class PreProceso {
 	private  File fileDirWork;
 	private  File fileDirDownload;
 	private  int numImages = 0;
+	private static final long SEGUNDOS = 1000;
+	private static final long MINUTOS = 60;
 	
 	public void ejecuta(){
 		HashMap paramsMap = null;
@@ -25,6 +29,9 @@ public class PreProceso {
 	public void ejecuta(HashMap paramsMap) {
 		MnistFetcher mf = new MnistFetcher();
 		configuracion = new Configuracion(paramsMap);
+		long totalTodo =0;
+		long finProc = 0;
+		long iniProc = System.currentTimeMillis();
 		
 		try{
 			//leemos el numero de imagenes a leer
@@ -79,8 +86,13 @@ public class PreProceso {
 				log.debug("Ficheros generados en: "+fileDirWork.getAbsolutePath());
 				break;
 			}
-			
+			finProc = System.currentTimeMillis();
+			totalTodo = (finProc-iniProc)/SEGUNDOS;
+			log.debug("Tiempo de Procesamiento: "+(((totalTodo/MINUTOS)==0)?totalTodo+"s.":((totalTodo/MINUTOS)+"m."))+" ");
 		}catch(Exception e){
+			finProc = System.currentTimeMillis();
+			totalTodo = (finProc-iniProc)/SEGUNDOS;
+			log.debug("Tiempo de Procesamiento hasta ERROR: "+(((totalTodo/MINUTOS)==0)?totalTodo+"s.":((totalTodo/MINUTOS)+"m."))+" ");
 			log.error("Error en PreProceso: "+e.getMessage());
 			e.printStackTrace();
 		}

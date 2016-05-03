@@ -35,7 +35,11 @@
             <groupId>org.nd4j</groupId>
             <version>${canova.version}</version>
         </dependency>
-        
+        <dependency>
+        	<groupId>es.uem.etl.config</groupId>
+		    <artifactId>Configuracion</artifactId>
+		    <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
 		    <groupId>log4j</groupId>
 		    <artifactId>log4j</artifactId>

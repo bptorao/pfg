@@ -1,8 +1,11 @@
 package bptg.uem.pfg.wclassifiers;
 
+import org.apache.log4j.Logger;
+
 import amten.ml.NNParams;
 import amten.ml.matrix.Matrix;
 import amten.ml.matrix.MatrixUtils;
+import es.uem.etl.config.Configuracion;
 
 /**
  * Examples of using NeuralNetwork for classification.
@@ -12,6 +15,10 @@ import amten.ml.matrix.MatrixUtils;
  *  
  */
 public class NNClassificationMNIST {
+	
+	private static Logger log = Logger.getLogger(NNClassificationMNIST.class);
+	private static Configuracion configuracion = new Configuracion();
+	
 
     /**
      * Performs classification of Handwritten digits,
@@ -21,21 +28,28 @@ public class NNClassificationMNIST {
      *
      * @see <a href=" http://yann.lecun.com/exdb/mnist/">http://yann.lecun.com/exdb/mnist/</a></a>
      */
-    public static void runMNISTClassification(boolean useConvolution) throws Exception {
+    public static void runMNISTClassification() throws Exception {
+    	boolean useConvolution = new Boolean(configuracion.value("nnclassifier.useConvolution"));
+    	configuracion = new Configuracion();
+    	
         if (useConvolution) {
             System.out.println("Running classification on MNIST Digits dataset, with convolution...\n");
+            log.debug("Running classification on MNIST Digits dataset, with convolution...\n");
         } else {
             System.out.println("Running classification on MNIST Digits dataset...\n");
+            log.debug("Running classification on MNIST Digits dataset...\n");
         }
         // Read data from CSV-file
-        int headerRows = 1;
-        char separator = ',';
-        Matrix data = MatrixUtils.readCSV("c:/uem/PFG/trabajo/Convolutional_Training_Digits_1000.csv", separator, headerRows);
+        int headerRows = new Integer(configuracion.value("nnclassifier.headerRows"));
+        char separator = (configuracion.value("nnclassifier.separator")).charAt(0);
+        String fileName = configuracion.value("nnclassifier.filename");
+        log.debug("Running for: ["+fileName+"] Separator: "+separator+" HeaderRows: "+headerRows+" ");
+        Matrix data = MatrixUtils.readCSV(fileName, separator, headerRows);
         
-        //Integrar con Hadoop aquí para obtener la matriz
         
         // Split data into training set and crossvalidation set.
-        float crossValidationPercent = 33;
+        //float crossValidationPercent = 33;
+        float crossValidationPercent = configuracion.valueFloat("nnclassifier.crossValidationPercent");
         Matrix[] split = MatrixUtils.split(data, crossValidationPercent, 0);
         Matrix dataTrain = split[0];
         Matrix dataCV = split[1];
@@ -47,15 +61,22 @@ public class NNClassificationMNIST {
         Matrix yCV = dataCV.getColumns(0, 0);
 
         NNParams params = new NNParams();
-        params.numClasses = 10; // 10 digits to classify
-        params.hiddenLayerParams = useConvolution ? new NNParams.NNLayerParams[]{ new NNParams.NNLayerParams(20, 5, 5, 2, 2) , new NNParams.NNLayerParams(100, 5, 5, 2, 2) } :
-                                                    new NNParams.NNLayerParams[] { new NNParams.NNLayerParams(100) };
-        params.maxIterations = useConvolution ? 10 : 200;
-        params.learningRate = useConvolution ? 1E-2 : 0;
+        //params.numClasses = 10; // 10 digits to classify
+        //params.hiddenLayerParams = useConvolution ? new NNParams.NNLayerParams[]{ new NNParams.NNLayerParams(20, 5, 5, 2, 2) , new NNParams.NNLayerParams(100, 5, 5, 2, 2) } :
+        //    new NNParams.NNLayerParams[] { new NNParams.NNLayerParams(100) };
+        //params.maxIterations = useConvolution ? 10 : 200;
+        //params.learningRate = useConvolution ? 1E-2 : 0;
+        
+        params.numClasses = configuracion.valueInt("nnclassifier.numClasses");
+        params.hiddenLayerParams = useConvolution ? new NNParams.NNLayerParams[]{ new NNParams.NNLayerParams(configuracion.valueInt("nnclasconvolution.NNLayerParams01"), configuracion.valueInt("nnclasconvolution.NNLayerParams02"), configuracion.valueInt("nnclasconvolution.NNLayerParams03"), configuracion.valueInt("nnclasconvolution.NNLayerParams04"), configuracion.valueInt("nnclasconvolution.NNLayerParams05")) , new NNParams.NNLayerParams(configuracion.valueInt("nnclasconvolution.NNLayerParams11"), configuracion.valueInt("nnclasconvolution.NNLayerParams12"), configuracion.valueInt("nnclasconvolution.NNLayerParams13"), configuracion.valueInt("nnclasconvolution.NNLayerParams14"), configuracion.valueInt("nnclasconvolution.NNLayerParams15")) } :
+                                                    new NNParams.NNLayerParams[] { new NNParams.NNLayerParams(configuracion.valueInt("nnclassifier.NNLayerParams")) };
+        params.maxIterations = useConvolution ? configuracion.valueInt("nnclasconvolution.maxIterations") : configuracion.valueInt("nnclassifier.maxIterations");
+        params.learningRate = useConvolution ? configuracion.valueDouble("nnclasconvolution.learningRate") : configuracion.valueDouble("nnclassifier.learningRate");
 
         long startTime = System.currentTimeMillis();
         amten.ml.NeuralNetwork nn = new amten.ml.NeuralNetwork(params);
         nn.train(xTrain, yTrain);
+        //objeto nn - ver donde se almacena
         System.out.println("\nTraining time: " + String.format("%.3g", (System.currentTimeMillis() - startTime) / 1000.0) + "s");
 
         int[] predictedClasses = nn.getPredictedClasses(xTrain);
@@ -65,7 +86,7 @@ public class NNClassificationMNIST {
                 correct++;
             }
         }
-        System.out.println("Training set accuracy: " + String.format("%.3g", (double) correct/predictedClasses.length*100) + "%");
+        System.out.println("Training set accuracy: " + String.format("%.6g", (double) correct/predictedClasses.length*100) + "%");
 
         predictedClasses = nn.getPredictedClasses(xCV);
         correct = 0;
@@ -74,14 +95,15 @@ public class NNClassificationMNIST {
                 correct++;
             }
         }
-        System.out.println("Crossvalidation set accuracy: " + String.format("%.3g", (double) correct/predictedClasses.length*100) + "%");
+       // nn.getPredictions(xTrain);
+        System.out.println("Crossvalidation set accuracy: " + String.format("%.6g", (double) correct/predictedClasses.length*100) + "%");
     }
 
  
     public static void main(String[] args) throws Exception {
-    	runMNISTClassification(false);
+    	//runMNISTClassification(false);
         System.out.println("\n\n\n");
-        runMNISTClassification(true);
+        runMNISTClassification();
         System.out.println("\n\n\n");
         //runKaggleTitanicClassification();
     }
