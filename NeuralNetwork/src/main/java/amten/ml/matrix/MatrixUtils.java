@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Some helper methods for manipulating matrices.
  *
- * @author Johannes Amtén
+ * @author Johannes Amton
  *
  */
 

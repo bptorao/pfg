@@ -1,0 +1,5 @@
+2016-05-03 01:38:20 DEBUG Configuracion:53 - Config:Cargando propiedades del fichero:C:\NNClassifierMnist\es\uem\config\configuracion.properties
+2016-05-03 01:38:20 DEBUG Configuracion:53 - Config:Cargando propiedades del fichero:C:\NNClassifierMnist\es\uem\config\configuracion.properties
+2016-05-03 01:38:20 DEBUG NNClassificationMNIST:37 - Running classification on MNIST Digits dataset, with convolution...
+
+2016-05-03 01:38:20 DEBUG NNClassificationMNIST:46 - Running for: [c:/uem/PFG/trabajo/Convolutional_Training_Digits_1000.csv] Separator: , HeaderRows: 1 

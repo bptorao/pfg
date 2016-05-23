@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Can perform regression or classification.
  * Training is done by multithreaded mini-batch gradient descent with native matrix lib.
  *
- * @author Johannes Amtén
+ * @author Johannes Amton
  *
  */
 

@@ -9,4 +9,4 @@ for /R lib %%a in (*.jar) do (
 )
 set CLASSPATH=!CLASSPATH!
 
-java -cp %CLASSPATH% bptg.uem.pfg.wclassifiers.NNClassificationMNIST
+java -Xmx2048M -cp %CLASSPATH% bptg.uem.pfg.wclassifiers.NNClassificationMNIST

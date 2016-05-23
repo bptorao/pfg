@@ -6,8 +6,14 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
 import amten.ml.NNParams;
@@ -16,16 +22,17 @@ import amten.ml.matrix.MatrixUtils;
 import au.com.bytecode.opencsv.CSVReader;
 import es.uem.etl.config.Configuracion;
 
+
 /**
  * Examples of using NeuralNetwork for classification.
  *
- * @author Johannes AmtÃ©n - Versión Adaptada PFG Bueká Torao - Integración Hadoop
+ * @author Johannes Amton - Version Adaptada PFG Bueka Torao - Integracion Hadoop
  * 
  *  
  */
-public class NNClassificationMNIST {
+public class NNClassificationMNISTHadoop extends Configured implements Tool {
 	
-	private static Logger log = Logger.getLogger(NNClassificationMNIST.class);
+	private static Logger log = Logger.getLogger(NNClassificationMNISTHadoop.class);
 	private static Configuracion configuracion = new Configuracion();
 	
 
@@ -37,7 +44,7 @@ public class NNClassificationMNIST {
      *
      * @see <a href=" http://yann.lecun.com/exdb/mnist/">http://yann.lecun.com/exdb/mnist/</a></a>
      */
-    public static void runMNISTClassification()  throws Exception {
+    public static void runMNISTClassification() throws Exception {
     	boolean useConvolution = new Boolean(configuracion.value("nnclassifier.useConvolution"));
     	configuracion = new Configuracion();
     	Matrix data = null;
@@ -157,12 +164,40 @@ public class NNClassificationMNIST {
 		return m;
 	}
 
+	public static void main(String[] args) throws Exception{
+		System.out.println("Run NNClassificationMNISTHadoop");
+		int exitCode = ToolRunner.run(new NNClassificationMNISTHadoop(), args);
+		System.exit(exitCode);
+	}
  
-    public static void main(String[] args) throws Exception {
+	public int run(String[] args) throws Exception {
+		
+		log.debug("Run NNClassificationMNISTHadoop");
+	
+		Job job = new org.apache.hadoop.mapreduce.Job();
+		job.setJarByClass(NNClassificationMNISTHadoop.class);
+		job.setJobName("NNClassificationMNISTHadoop");
+		
+		FileInputFormat.addInputPath(job, new Path("/img"));
+		FileOutputFormat.setOutputPath(job, new Path("/img/res"));
+	
+	//	job.setOutputKeyClass(Text.class);
+	//	job.setOutputValueClass(IntWritable.class);
+	//	job.setOutputFormatClass(TextOutputFormat.class);
+	//	job.setMapperClass(WordCountMapper.class);
+	//	job.setReducerClass(WordCountReducer.class);
+	
+		int returnValue = job.waitForCompletion(true) ? 0:1;
+		System.out.println("job.isSuccessful " + job.isSuccessful());
+		return returnValue;
+	}
+ 
+ /*   public static void main(String[] args) throws Exception {
     	//runMNISTClassification(false);
         System.out.println("\n\n\n");
         runMNISTClassification();
         System.out.println("\n\n\n");
         //runKaggleTitanicClassification();
     }
+ */
 }
