@@ -18,7 +18,7 @@ import java.util.Enumeration;
  * Can perform regression or classification.
  * Training is done by multithreaded mini-batch gradient descent with native matrix lib.
  *
- * @author Johannes Amtén
+ * @author Johannes Amten
  *
  */
 
@@ -111,7 +111,7 @@ public class NeuralNetwork extends AbstractClassifier implements Serializable {
      */
     public Enumeration listOptions() {
 
-        ArrayList<Option> options = new ArrayList<>();
+        ArrayList<Option> options = new ArrayList<Option>();
 
         options.add(new Option(
                 "\tNumber of examples in each mini-batch.",
@@ -178,7 +178,7 @@ public class NeuralNetwork extends AbstractClassifier implements Serializable {
     }
 
     public String [] getOptions() {
-        ArrayList<String> options = new ArrayList<>();
+        ArrayList<String> options = new ArrayList<String>();
         options.add("-lr");
         options.add(Double.toString(myParams.learningRate));
         options.add("-wp");
@@ -317,7 +317,7 @@ public class NeuralNetwork extends AbstractClassifier implements Serializable {
 
     private NNParams.NNLayerParams[] getHiddenLayers(String s) {
         String[] stringList = s.split(",");
-        ArrayList<NNParams.NNLayerParams> layerList = new ArrayList<>();
+        ArrayList<NNParams.NNLayerParams> layerList = new ArrayList<NNParams.NNLayerParams>();
         for (String layerString:stringList) {
             if (layerString.contains("-")) {
                 // Convolutional layer

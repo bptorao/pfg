@@ -49,7 +49,7 @@ public class MatrixUtils {
         BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
         CSVWriter cw = new CSVWriter(bw, ',', CSVWriter.NO_QUOTE_CHARACTER);
 
-        ArrayList<String[]> rows = new ArrayList<>();
+        ArrayList<String[]> rows = new ArrayList<String[]>();
         for (int row = 0; row < m.numRows(); row++) {
             String[] rowValues = new String[m.numColumns()];
             for (int col = 0; col < m.numColumns(); col++) {
@@ -172,7 +172,7 @@ public class MatrixUtils {
      */
 	public static Matrix[] split(Matrix m, float crossValidationPercent, float testPercent)
 	{
-		ArrayList<Integer> rowIndexes = new ArrayList<>();
+		ArrayList<Integer> rowIndexes = new ArrayList<Integer>();
 		for (int ri = 0; ri < m.numRows(); ri++) {
 			rowIndexes.add(ri);
 		}
@@ -221,7 +221,7 @@ public class MatrixUtils {
     public static void split(Matrix x, Matrix y, int batchSize, List<Matrix> batchesX, List<Matrix> batchesY)
     {
         boolean createMatrices = batchesX.size() == 0;
-        ArrayList<Integer> rowIndexes = new ArrayList<>();
+        ArrayList<Integer> rowIndexes = new ArrayList<Integer>();
         for (int ri = 0; ri < x.numRows(); ri++) {
             rowIndexes.add(ri);
         }

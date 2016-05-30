@@ -19,7 +19,7 @@ import es.uem.etl.config.Configuracion;
 /**
  * Examples of using NeuralNetwork for classification.
  *
- * @author Johannes AmtÃ©n - Versión Adaptada PFG Bueká Torao - Integración Hadoop
+ * @author Johannes Amton - Versión Adaptada PFG Bueká Torao - Integración Hadoop
  * 
  *  
  */
@@ -60,7 +60,8 @@ public class NNClassificationMNIST {
         if (configuracion.value("nnclassifier.readfrom").equalsIgnoreCase("hadoop")){
         	log.debug("Read data from CSV-file in Hadoop");
         	
-        	data = readCSVfromHadoop(fileName, separator, headerRows);
+        	log.debug("Use NNClassificationMNISTHadoop in order to run the algorithm with Hadoop & Spark");
+        	System.exit(-1);
         }
         if (configuracion.value("nnclassifier.readfrom").equalsIgnoreCase("disk")){
         	log.debug("Read data from CSV-file in disk");

@@ -1,36 +1,36 @@
 package bptg.uem.pfg.wclassifiers;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
+
+import java.io.StringReader;
+
 import java.util.List;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.Tool;
-import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.FlatMapFunction;
 
 import amten.ml.NNParams;
 import amten.ml.matrix.Matrix;
 import amten.ml.matrix.MatrixUtils;
 import au.com.bytecode.opencsv.CSVReader;
 import es.uem.etl.config.Configuracion;
+import scala.Tuple2;
+
 
 
 /**
  * Examples of using NeuralNetwork for classification.
  *
- * @author Johannes Amton - Version Adaptada PFG Bueka Torao - Integracion Hadoop
+ * @author Johannes Amton - Version Adaptada PFG Bueka Torao - Integracion Hadoop & Spark
  * 
  *  
  */
-public class NNClassificationMNISTHadoop extends Configured implements Tool {
+public class NNClassificationMNISTHadoop  {
 	
 	private static Logger log = Logger.getLogger(NNClassificationMNISTHadoop.class);
 	private static Configuracion configuracion = new Configuracion();
@@ -44,7 +44,7 @@ public class NNClassificationMNISTHadoop extends Configured implements Tool {
      *
      * @see <a href=" http://yann.lecun.com/exdb/mnist/">http://yann.lecun.com/exdb/mnist/</a></a>
      */
-    public static void runMNISTClassification() throws Exception {
+    public static void runMNISTClassificationHadoop() throws Exception {
     	boolean useConvolution = new Boolean(configuracion.value("nnclassifier.useConvolution"));
     	configuracion = new Configuracion();
     	Matrix data = null;
@@ -68,15 +68,13 @@ public class NNClassificationMNISTHadoop extends Configured implements Tool {
         	log.debug("Read data from CSV-file in Hadoop");
         	
         	data = readCSVfromHadoop(fileName, separator, headerRows);
-        }
-        if (configuracion.value("nnclassifier.readfrom").equalsIgnoreCase("disk")){
-        	log.debug("Read data from CSV-file in disk");
-        	 data = MatrixUtils.readCSV(fileName, separator, headerRows);
         }else{
         	log.debug("Read data from CSV-file in disk");
+        	log.debug("Use NNClassificationMNIST in order to run the algorithm without Hadoop & Spark");
         	System.exit(1);
         }
-         
+        System.out.println("Running training...");
+        log.debug("Running training...");
         
         // Split data into training set and crossvalidation set.
         //float crossValidationPercent = 33;
@@ -126,12 +124,20 @@ public class NNClassificationMNISTHadoop extends Configured implements Tool {
                 correct++;
             }
         }
-       // nn.getPredictions(xTrain);
+        
         System.out.println("Crossvalidation set accuracy: " + String.format("%.6g", (double) correct/predictedClasses.length*100) + "%");
     }
     
+    public static class ParseLine implements FlatMapFunction<Tuple2<String, String>, String[]> {
+        public Iterable<String[]> call(Tuple2<String, String> file) throws Exception {
+          CSVReader reader = new CSVReader(new StringReader(file._2()));
+          return reader.readAll();
+        }
+      }
+    
+    
     /**
-     * Reads a CSV-file from Hadoop fs into a Matrix.
+     * Reads a CSV-file from Hadoop  into a Matrix.
      *
      * @param filename
      * @param separator Separator character between values.
@@ -141,63 +147,35 @@ public class NNClassificationMNISTHadoop extends Configured implements Tool {
      */
 	public static Matrix readCSVfromHadoop(String filename, char separator, int headerLines) throws IOException {
 		
-		Path pt=new Path(filename);
-        FileSystem fs = FileSystem.get(new Configuration());
-        BufferedReader br=new BufferedReader(new InputStreamReader(fs.open(pt)));
-		//BufferedReader br = new BufferedReader(new FileReader(filename));
-		
-        CSVReader cr = new CSVReader(br, separator, '\"', '\\', headerLines);
-		List<String[]> values = cr.readAll();
-		cr.close();
-		br.close();
+        
+        JavaSparkContext sc = new JavaSparkContext(new SparkConf().setAppName("NNClassificationMNISTHadoop"));
+        JavaPairRDD<String, String> csvData = sc.wholeTextFiles(filename);
+
+        JavaRDD<String[]> keyedRDD = csvData.flatMap(new ParseLine());
+        List<String[]> values = keyedRDD.collect();
+
 		
 		int numRows = values.size();
 		int numCols = values.get(0).length;
 		Matrix m = new Matrix(numRows, numCols);
-		for (int row = 0; row < numRows; row++) {
+		for (int row = headerLines; row < numRows; row++) {
 			String[] rowValues = values.get(row);
 			for (int col = 0; col < numCols; col++) {
 				Double v = Double.parseDouble(rowValues[col]);
 				m.set(row, col, v);
 			}
 		}
+
 		return m;
 	}
-
-	public static void main(String[] args) throws Exception{
-		System.out.println("Run NNClassificationMNISTHadoop");
-		int exitCode = ToolRunner.run(new NNClassificationMNISTHadoop(), args);
-		System.exit(exitCode);
-	}
+	
  
-	public int run(String[] args) throws Exception {
-		
-		log.debug("Run NNClassificationMNISTHadoop");
-	
-		Job job = new org.apache.hadoop.mapreduce.Job();
-		job.setJarByClass(NNClassificationMNISTHadoop.class);
-		job.setJobName("NNClassificationMNISTHadoop");
-		
-		FileInputFormat.addInputPath(job, new Path("/img"));
-		FileOutputFormat.setOutputPath(job, new Path("/img/res"));
-	
-	//	job.setOutputKeyClass(Text.class);
-	//	job.setOutputValueClass(IntWritable.class);
-	//	job.setOutputFormatClass(TextOutputFormat.class);
-	//	job.setMapperClass(WordCountMapper.class);
-	//	job.setReducerClass(WordCountReducer.class);
-	
-		int returnValue = job.waitForCompletion(true) ? 0:1;
-		System.out.println("job.isSuccessful " + job.isSuccessful());
-		return returnValue;
-	}
- 
- /*   public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
     	//runMNISTClassification(false);
         System.out.println("\n\n\n");
-        runMNISTClassification();
+        log.info("runMNISTClassificationHadoop");
+        runMNISTClassificationHadoop();
         System.out.println("\n\n\n");
         //runKaggleTitanicClassification();
     }
- */
 }

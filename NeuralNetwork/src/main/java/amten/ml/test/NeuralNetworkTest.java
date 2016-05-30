@@ -48,8 +48,8 @@ public class NeuralNetworkTest {
         nn.train(xTrain, yTrain);
         System.out.println("Training time: " + (System.currentTimeMillis() - startTime) / 1000.0 + "s");
 
-        List<Matrix> batchesX = new ArrayList<>();
-        List<Matrix> batchesY = new ArrayList<>();
+        List<Matrix> batchesX = new ArrayList<Matrix>();
+        List<Matrix> batchesY = new ArrayList<Matrix>();
         MatrixUtils.split(xTrain, yTrain, params.batchSize, batchesX, batchesY);
         int correct = 0;
         for (int batch = 0; batch < batchesX.size(); batch++) {
@@ -62,8 +62,8 @@ public class NeuralNetworkTest {
         }
         System.out.println("Training set accuracy: " + (double) correct/xTrain.numRows()*100 + "%");
 
-        batchesX = new ArrayList<>();
-        batchesY = new ArrayList<>();
+        batchesX = new ArrayList<Matrix>();
+        batchesY = new ArrayList<Matrix>();
         MatrixUtils.split(xCV, yCV, params.batchSize, batchesX, batchesY);
         correct = 0;
         for (int batch = 0; batch < batchesX.size(); batch++) {

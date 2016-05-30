@@ -127,8 +127,8 @@ public class NeuralNetwork implements Serializable{
         Reader keyboardReader = System.console() != null ? System.console().reader() : null;
         boolean halted = false;
 
-        List<Matrix> batchesX = new ArrayList<>();
-        List<Matrix> batchesY = new ArrayList<>();
+        List<Matrix> batchesX = new ArrayList<Matrix>();
+        List<Matrix> batchesY = new ArrayList<Matrix>();
         MatrixUtils.split(x, y, myParams.batchSize, batchesX, batchesY);
         if (myParams.learningRate == 0.0) {
             // Auto-find initial learningRate.
@@ -136,8 +136,8 @@ public class NeuralNetwork implements Serializable{
         }
 
         double cost = getCostThreaded(batchesX, batchesY, myParams.weightPenalty);
-        LinkedList<Double> fiveLastCosts = new LinkedList<>();
-        LinkedList<Double> tenLastCosts = new LinkedList<>();
+        LinkedList<Double> fiveLastCosts = new LinkedList<Double>();
+        LinkedList<Double> tenLastCosts = new LinkedList<Double>();
         if (myParams.debug) {
             System.out.println("\n\n*** Training network. Press <enter> to halt. ***\n");
             if (mySoftmax) {
@@ -220,7 +220,7 @@ public class NeuralNetwork implements Serializable{
             final Matrix predictions = new Matrix(x.numRows(), myNumOutputs);
             ExecutorService es = Executors.newFixedThreadPool(myParams.numThreads);
 
-            List<Future> queuedJobs = new ArrayList<>();
+            List<Future> queuedJobs = new ArrayList<Future>();
             for (int row = 0 ; row < x.numRows(); row += myParams.batchSize) {
                 final int startRow = row;
                 final int endRow = Math.min(startRow + myParams.batchSize - 1, x.numRows()-1);
@@ -298,7 +298,7 @@ public class NeuralNetwork implements Serializable{
     }
 
     private void initThetas() {
-        ArrayList<Matrix> thetas = new ArrayList<>();
+        ArrayList<Matrix> thetas = new ArrayList<Matrix>();
 
         int numLayers = myLayerParams.length;
 
@@ -451,7 +451,7 @@ public class NeuralNetwork implements Serializable{
     private double getCostThreaded(List<Matrix> batchesX, List<Matrix> batchesY, final double weightPenalty) throws Exception {
         final int batchSize = batchesX.get(0).numRows();
         // Queue up cost calculation in thread pool
-        List<Future<Double>> costJobs = new ArrayList<>();
+        List<Future<Double>> costJobs = new ArrayList<Future<Double>>();
         for (int batchNr = 0 ; batchNr < batchesX.size(); batchNr++) {
             final Matrix bx = batchesX.get(batchNr);
             final Matrix by = batchesY.get(batchNr);
@@ -570,7 +570,7 @@ public class NeuralNetwork implements Serializable{
         final int batchSize = batchesX.get(0).numRows();
 
         // Queue up all batches for gradient computation in the thread pool.
-        List<Future> queuedJobs = new ArrayList<>();
+        List<Future> queuedJobs = new ArrayList<Future>();
         for (int batchNr = 0 ; batchNr < batchesX.size(); batchNr++) {
             final Matrix bx = batchesX.get(batchNr);
             final Matrix by = batchesY.get(batchNr);
@@ -611,8 +611,8 @@ public class NeuralNetwork implements Serializable{
         int numUsedTrainingExamples = 5000;
         int numBatches = numUsedTrainingExamples/batchSize;
 
-        List<Matrix> batchesX = new ArrayList<>();
-        List<Matrix> batchesY = new ArrayList<>();
+        List<Matrix> batchesX = new ArrayList<Matrix>();
+        List<Matrix> batchesY = new ArrayList<Matrix>();
         MatrixUtils.split(x, y, batchSize, batchesX, batchesY);
         while (batchesX.size() < numBatches) {
             batchesX.addAll(batchesX);
