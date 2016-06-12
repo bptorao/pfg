@@ -17,15 +17,15 @@
 <body>
 	<div class="page-header">
 		<img src="UEM_logo.png" class="img" width="367" height="92" alt="" /><br />
-		<h2>ETL MNIST Web<small> Final Degree Project </small></h2>
+		<h2>ETL MNIST Web<small> Proyecto Fin de Grado </small></h2>
 
-		<h4>MNIST images Pre-Process<strong>Collection:</strong> <a href="http://yann.lecun.com/exdb/mnist/">http://yann.lecun.com/exdb/mnist/</a></h4>
+		<h4>PreProceso de imágenes MNIST <strong>Colección:</strong> <a href="http://yann.lecun.com/exdb/mnist/">http://yann.lecun.com/exdb/mnist/</a></h4>
 
 	</div>
 		<div>
 		<div class="btn-group btn-group-justified" role="group" aria-label="...">
-			<a href="/index.html" class="modulomenu" title="">ETL MNIST Web Home</a>	
-			<a href="/index_es.html" class="modulomenu" title="">Cambiar a Castellano</a>
+			<a href="/index_es.html" class="modulomenu" title="">ETL MNIST Web Home</a>
+			<a href="/index_es.html" class="modulomenu" title="">Change English</a>
 		</div>
 		 
 <!-- / header-->
@@ -39,31 +39,31 @@
 				</div>
 				<div class="row">
 					<form method="POST" action="preProceso.do"/>
-						<h1>Running</h1>
-						<h3>Parameters</h3>
+						<h1>Ejecución</h1>
+						<h3>Parámetros</h3>
 						  <!-- -->
-						  <label for="sel1">Download collection:</label>
-						  <span>Make sure there is a collection copy on main folder pointed out in properties file(directorio.mnist)</span><br />
+						  <label for="sel1">Descargar colección:</label>
+						  <span>Si selecciona no, debe haber una copia de la colección descargada en el directorio de trabajo indicado en properties (directorio.mnist)</span><br />
 						  <select class="form-control" name="descarga">
 							<option>no</option>
-							<option>yes</option>
+							<option>si</option>
 						  </select>
 						  <!-- -->
-						  <label for="sel1">Main folder:</label>
+						  <label for="sel1">Directorio de trabajo:</label>
 						  <input type="text" class="form-control" name="directorio">
 						  <!-- -->
-						  <label for="sel1">Get file filling with N images (max 60000):</label>
+						  <label for="sel1">Obtener fichero de N imágenes (max 60000):</label>
 						  <input type="text" class="form-control" name="obtenerNimages">
 						  <!-- -->
-						  <label for="sel1">Type of file to build:</label>
+						  <label for="sel1">Tipo de fichero a Generar:</label>
 						  <select class="form-control" name="writeImageto">
 							<option>vector</option>
 							<option>vector_convolutional</option>
 							<option>ppm</option>
 						  </select>
-						  <input type="hidden" value="en" />
 						<!--<input type="submit" value="Submit" />-->
-						<button class='boton' type='submit' >Run</button>
+						<input type="hidden" value="es" />
+						<button class='boton' type='submit' >Ejecutar</button>
 					</form>
 				</div>
 				<div class="row">
@@ -74,7 +74,7 @@
 				</div>
 				<div class="row">
 					<div id="logfile">
-						Log<br />
+						Log del proceso<br />
 					</div>
 				</div>
 			</div>

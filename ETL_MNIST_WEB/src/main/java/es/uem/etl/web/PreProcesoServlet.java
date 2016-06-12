@@ -94,9 +94,9 @@ public class PreProcesoServlet extends HttpServlet
 						+"<body>                                                                                                            "
 						+"	<div class=\"page-header\">                                                                                      "
 						+"		<img src=\"UEM_logo.png\" class=\"img\" width=\"367\" height=\"92\" alt=\"\" /><br />                          "
-						+"		<h2>ETL MNIST Web<small> Proyecto Fin de Grado </small></h2>                                                   "
+						+"		<h2>ETL MNIST Web<small> Proyecto Fin de Grado / Final Degree Project </small></h2>                                                   "
 						+"                                                                                                                  "
-						+"		<h4>PreProceso de imágenes MNIST <strong>Colección: http://yann.lecun.com/exdb/mnist/</strong></h4>            "
+						+"		<h4>PreProceso de imágenes MNIST / MNIST images preprocess <strong>Colección / Collection: http://yann.lecun.com/exdb/mnist/</strong></h4>            "
 						+"                                                                                                                  "
 						+"	</div>                                                                                                           "
 						+"		<div>                                                                                                          "
@@ -115,8 +115,8 @@ public class PreProcesoServlet extends HttpServlet
 						+"					                                                                                                         "
 						+"				</div>                                                                                                     "
 						+"				<div class=\"row\">                                                                                        ");
-	        out.println("<h1>Tarea ETL MNIST Ejecutada</h1>");
-	        out.println("<a href=\"/index.html\" class=\"modulomenu\" title=\"\">Volver</a> ");
+	        out.println("<h1>Tarea ETL MNIST Ejecutada / ETL task finished</h1>");
+	        out.println("<a href=\"/index.html\" class=\"modulomenu\" title=\"\">Volver / Back</a> ");
 	        out.println("﻿ </div> "
 						+"			</div>                                      "
 						+"		</div>                                        "
@@ -132,8 +132,8 @@ public class PreProcesoServlet extends HttpServlet
         }catch(Exception e){
         	out.println("<html><head>");
 	        out.println("</head><body>");
-            out.println("Error Ejecutando ETL MNIST");
-            out.println("<a href=\"/index.html\" class=\"modulomenu\" title=\"\">Volver</a>");
+            out.println("Error Ejecutando ETL MNIST / Error running ETL MNIST");
+            out.println("<a href=\"/index.html\" class=\"modulomenu\" title=\"\">Volver /Back</a>");
             out.println("</body>");
             out.println("</html>");
         }
